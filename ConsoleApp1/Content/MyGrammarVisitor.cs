@@ -11,16 +11,28 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     private List<string> _input = new();
     private int _inputCounter;
     private int operations;
+    private int maxOperations;
 
     public MyGrammarVisitor(List<string> input, int maxOperations)
     { 
         _inputCounter = 0;
         operations = 0;
         _input = input;
+        this.maxOperations = maxOperations;
+    }
+    
+    public void handleOperations()
+    {
+        operations++;
+        if (operations > maxOperations)
+        {
+            throw new Exception("Too many operations!");
+        }
     }
 
     public override object? VisitIfStatement(MyGrammarParser.IfStatementContext context)
     {
+        handleOperations();
         var value =  (bool) Visit(context.bool_value());
         if (value)
         {
@@ -31,6 +43,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitWhileStatement(MyGrammarParser.WhileStatementContext context)
     {
+        handleOperations();
         while ((bool)Visit(context.bool_value()))
         {
             Visit(context.expressions());
@@ -40,6 +53,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     }
     public override object? VisitPrintNum(MyGrammarParser.PrintNumContext context)
     {
+        handleOperations();
         var value = Visit(context.numeric_value());
         _output.Add(value);
         Console.Write(value);
@@ -48,6 +62,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     }
     public override object? VisitPrintBool(MyGrammarParser.PrintBoolContext context)
     {
+        handleOperations();
         var value = Visit(context.bool_value());
         _output.Add(value);
         Console.Write(value);
@@ -57,6 +72,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitScanNum(MyGrammarParser.ScanNumContext context)
     {
+        handleOperations();
         var varName = context.NUM_VAR().GetText();
         NumVariables[varName] = _input[_inputCounter % _input.Count];
         _inputCounter++;
@@ -64,6 +80,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     }
     public override object? VisitScanBool(MyGrammarParser.ScanBoolContext context)
     {
+        handleOperations();
         var varName = context.BOOL_VAR().GetText();
         BoolVariables[varName] = _input[_inputCounter % _input.Count];
         _inputCounter++;
@@ -71,6 +88,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     }
     public override object? VisitAssignNum(MyGrammarParser.AssignNumContext context)
     {
+        handleOperations();
         var varName = context.NUM_VAR().GetText();
         var value = Visit(context.numeric_value());
 
@@ -81,6 +99,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitAssignBool(MyGrammarParser.AssignBoolContext context)
     {
+        handleOperations();
         var varName = context.BOOL_VAR().GetText();
         var value = Visit(context.bool_value());
 
@@ -191,6 +210,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitNumVarVal(MyGrammarParser.NumVarValContext context)
     {
+        
         var varName = context.NUM_VAR().GetText();
 
         if (!NumVariables.ContainsKey(varName))
@@ -293,33 +313,5 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     {
         return Visit(context.numeric_value());
     }
-    
-    
-    //
-    // public override object? VisitNumeric_value(MyGrammarParser.Numeric_valueContext context)
-    // {
-    //     if (context.NUMBER() != null)
-    //         return float.Parse(context.NUMBER().GetText());
-    //
-    //     if (context.NUM_VAR() is { } n)
-    //     {
-    //         if (!Variables.ContainsKey(n.GetText()))
-    //             throw new Exception("Reading undefined variable");
-    //         
-    //         return Variables[n.GetText()];
-    //     }
-    //
-    //     if (context.SUB() != null && context.numeric_value().Length == 1) // Not sure
-    //         return -float.Parse(context.GetText());
-    //
-    //         
-    //     return null;
-    //     
-    // }
-
-    // public override object? VisitAritmetic_operator_strong(MyGrammarParser.Aritmetic_operator_strongContext context)
-    // {
-    //     var left = Visit(context.)
-    // }
     
 }

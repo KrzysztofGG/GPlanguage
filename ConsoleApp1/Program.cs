@@ -19,5 +19,5 @@ var input = new List<string>()
     "input2",
     "input3",
 };
-MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(input, 3);
+MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(input, 16);
 myGrammarVisitor.Visit(programContext);
