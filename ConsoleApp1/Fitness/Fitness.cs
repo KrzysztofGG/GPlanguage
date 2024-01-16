@@ -24,4 +24,26 @@ public class Fitness{
             Console.WriteLine(t);
         }
     }
+
+    public double calculateFitness(Individual individual){
+        double fitness = 0;
+        foreach(var target in targets){
+            var output = individual.Run(target.Inputs);
+            fitness -=evaluate(output, target.ExpectedOutputs);
+        }
+        return fitness;
+    }
+
+    public double evaluate(List<string> outputs, List<string> expectedOutputs){
+        double res = 0;
+        for(int i=0; i< expectedOutputs.Count; i++){
+            if(i>= outputs.Count){
+                res += punishment;
+            }
+            else{
+                res += punishment * Math.Abs(Int32.Parse(outputs[i]) - Int32.Parse(expectedOutputs[i]));
+            }
+        }
+        return res;
+    }
 }
