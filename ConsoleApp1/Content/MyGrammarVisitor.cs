@@ -7,7 +7,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 {
     private Dictionary<string, object?> NumVariables { get; } = new();
     private Dictionary<string, object?> BoolVariables { get; } = new();
-    private List<object?> _output = new();
+    private List<string> _output = new();
     private List<string> _input = new();
     private int _inputCounter;
     private int operations;
@@ -20,7 +20,21 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         _input = input;
         this.maxOperations = maxOperations;
     }
-    
+
+    public List<String> visitWithOutput(IParseTree tree)
+    {
+        try
+        {
+            Visit(tree);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return _output;
+        }
+
+        return _output;
+    }
     public void handleOperations()
     {
         operations++;
@@ -55,7 +69,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     {
         handleOperations();
         var value = Visit(context.numeric_value());
-        _output.Add(value);
+        _output.Add((string) value);
         Console.Write(value);
         Console.Write('\n');
         return value;
@@ -64,7 +78,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     {
         handleOperations();
         var value = Visit(context.bool_value());
-        _output.Add(value);
+        _output.Add((string) value);
         Console.Write(value);
         Console.Write('\n');
         return value;

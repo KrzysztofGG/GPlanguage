@@ -29,7 +29,7 @@ public class Fitness{
         double fitness = 0;
         foreach(var target in targets){
             var output = individual.Run(target.Inputs);
-            fitness -=evaluate(output, target.ExpectedOutputs);
+            fitness -= evaluate(output, target.ExpectedOutputs);
         }
         return fitness;
     }
