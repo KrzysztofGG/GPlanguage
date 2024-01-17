@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 static class Gp{
 
-    static int POPULATION_SIZE = 100;
+    static int POPULATION_SIZE = 10;
     static int MAX_GENERATIONS = 10;
     static int MAX_OPERATIONS = 200;
     private static int FINISH_THRESHOLD = 1000;
@@ -44,7 +44,7 @@ static class Gp{
     public static void evolveGeneration()
     {
         var newOnes = new List<Individual>();
-        for (int i = 0; i < MAX_GENERATIONS; i++)
+        for (int i = 0; i < POPULATION_SIZE; i++)
         {
             newOnes.Add(new Individual(MAX_DEPTH,5));
         }
