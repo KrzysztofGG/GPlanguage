@@ -27,10 +27,14 @@ public class Fitness{
 
     public double calculateFitness(Individual individual){
         double fitness = 0;
-        foreach(var target in targets){
+        foreach(var target in targets)
+        {
+            // Console.WriteLine(individual.program);
             var output = individual.Run(target.Inputs);
             fitness -= evaluate(output, target.ExpectedOutputs);
         }
+        // Console.WriteLine("FITNESS: "+fitness);
+        individual.fitness = fitness;
         return fitness;
     }
 

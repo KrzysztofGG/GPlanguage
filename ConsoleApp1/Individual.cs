@@ -3,6 +3,10 @@ using ConsoleApp1.Content;
 
 public class Individual{
     public Program program;
+    public double fitness;
+    public Individual(int maxDepth, int numOfNodes){
+        program = new Program(maxDepth, numOfNodes);
+    }
     public List<String> Run(List<String> inputs){
         // return new List<string>();
         AntlrInputStream inputStream = new AntlrInputStream(program.ToString());
@@ -14,6 +18,9 @@ public class Individual{
 
         MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, 16);
         // myGrammarVisitor.Visit(programContext);
-        return myGrammarVisitor.visitWithOutput(programContext);
+        // Console.WriteLine("----");
+        var res = myGrammarVisitor.visitWithOutput(programContext);
+        // Console.WriteLine(res);
+        return res;
     }
 }

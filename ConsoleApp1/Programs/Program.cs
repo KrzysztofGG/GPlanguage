@@ -6,7 +6,9 @@ public class Program{
 
     public Program(int depth, int maxNumOfNodes){
         int numOfNodes = RandomGenerator.generateRandomInt(1, maxNumOfNodes);
-  
+        for(int i =0;i<6;i++){
+            this.nodes.Add(new InputNode(i));
+        }
         for(int i = 0; i<numOfNodes; i++){
             this.nodes.Add(RandomGenerator.generateRandomNode(depth));
         }
