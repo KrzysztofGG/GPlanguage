@@ -43,10 +43,17 @@ static class Gp{
 
     public static void evolveGeneration()
     {
-        foreach (var individual in population)
+        var newOnes = new List<Individual>();
+        for (int i = 0; i < MAX_GENERATIONS; i++)
         {
-            individual.program.grow(MAX_DEPTH + RandomGenerator.generateRandomInt(1,5));
+            newOnes.Add(new Individual(MAX_DEPTH,5));
         }
+
+        population = newOnes;
+        // foreach (var individual in population)
+        // {
+        //     individual.program.grow(MAX_DEPTH + RandomGenerator.generateRandomInt(1,5));
+        // }
     }
 
     public static void gradeGeneration()
