@@ -3,7 +3,7 @@ using System.Security.AccessControl;
 
 static class Gp{
 
-    static int POPULATION_SIZE = 100;
+    static int POPULATION_SIZE = 10000;
     static int MAX_GENERATIONS = 100;
     private static int MAX_OPERATIONS = 5;
     private static int FINISH_THRESHOLD = 0;
@@ -59,47 +59,38 @@ static class Gp{
         
         for (int i = 0; i < POPULATION_SIZE; i++)
         {
-            Individual i1 = population[i];
-            i1.program.grow(MAX_DEPTH+GENERATION_NUMBER);
+            if (random.NextDouble() < CROSSOVER_CHANCE)
+            {
+                int good1 = tournamentSelection();
+                int good2 = tournamentSelection();
+                Individual i1 = population[good1];
+                Individual i2 = population[good2];
+                
+                // Console.WriteLine("PICKED1\n"+i1.program.ToString());
+                // Console.WriteLine("PICKED2\n"+i2.program.ToString());
+                var (res1, res2) = Individual.cross(i1, i2);
+                
+                // Console.WriteLine("RES1\n"+res1.program.ToString());
+                // Console.WriteLine("RES2\n"+res2.program.ToString());
+                int bad1 = negativeSelection();
+                int bad2 = negativeSelection();
+                // Console.WriteLine(good1 +" " + good2 +" "+ bad1 + " " + bad2);
+                
+                population[bad1] = res1;
+                population[bad2] = res2;
+            }
+            else
+            {
+                Individual i1 = population[i];
+                i1.program.grow(MAX_DEPTH+5);
+            }
 
-            // Individual i2 = population[tournamentSelection()];
-
-            // var (res1, res2) = Individual.cross(i1, i2);
-            // population[i] = res1;
-            // population[i] = new Individual(MAX_DEPTH, MAX_OPERATIONS);
-
-            // if (random.NextDouble() < CROSSOVER_CHANCE)
-            // {
-            //     int good1 = tournamentSelection();
-            //     int good2 = tournamentSelection();
-            //     Individual i1 = population[good1];
-            //     Individual i2 = population[good2];
-            //     
-            //     // Console.WriteLine("PICKED1\n"+i1.program.ToString());
-            //     // Console.WriteLine("PICKED2\n"+i2.program.ToString());
-            //     var (res1, res2) = Individual.cross(i1, i2);
-            //     
-            //     // Console.WriteLine("RES1\n"+res1.program.ToString());
-            //     // Console.WriteLine("RES2\n"+res2.program.ToString());
-            //     int bad1 = negativeSelection();
-            //     int bad2 = negativeSelection();
-            //     // Console.WriteLine(good1 +" " + good2 +" "+ bad1 + " " + bad2);
-            //     
-            //     population[bad1] = res1;
-            //     population[bad2] = res2;
-            // }
-            // else
-            // {
-            //     Individual i1 = population[bestSelection()];
-            //     Individual i1_copy = i1.copy();
-            //     i1_copy.program.grow(MAX_DEPTH+random.Next(1,3));
-            //     population[negativeSelection()] = i1_copy;
-            // }
+            
 
         }
         // createPopulation();
-        Console.WriteLine(population.Count);
-        Console.WriteLine("BEST:\n"+population[bestSelection()].program);
+        // Console.WriteLine(population.Count);
+        // Console.WriteLine("BEST:\n"+population[bestSelection()].program);
         
         GENERATION_NUMBER += 1;
         
@@ -176,7 +167,7 @@ static class Gp{
         return bestIndex;
     }
     static void Main(){
-        fitness = new Fitness("../../../data/data.txt");
+        fitness = new Fitness("../../../data/problem.txt");
         createPopulation();
         runEvolve();
         SaveListToCsv(averageFitnessArr, "./average.txt");
