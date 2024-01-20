@@ -6,6 +6,13 @@ public class Individual{
     public double fitness;
     public Individual(int maxDepth, int numOfNodes){
         program = new Program(maxDepth, numOfNodes);
+        fitness = Gp.fitness.calculateFitness(this);
+    }
+
+    public Individual(Program program)
+    {
+        this.program = program;
+        fitness = Gp.fitness.calculateFitness(this);
     }
     public List<String> Run(List<String> inputs){
         // return new List<string>();

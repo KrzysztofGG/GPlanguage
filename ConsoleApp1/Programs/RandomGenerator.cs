@@ -4,6 +4,12 @@ public class RandomGenerator{
     public static int generateRandomInt(int lowerBound, int upperBound){
         return random.Next(lowerBound, upperBound+1);
     }
+
+    // public static Node getRandomProgramNode(Program program)
+    // {
+    //     return program.nodes[];
+    // }
+    
 public static Node generateRandomNode(int depth){
     int val = random.Next(0,5);
     if(depth<=1){
