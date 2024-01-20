@@ -1,6 +1,6 @@
-C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarLexer.cs
-C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarParser.cs
-C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarListener.cs
-C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarBaseListener.cs
-C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarVisitor.cs
-C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarBaseVisitor.cs
+C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarLexer.cs
+C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarParser.cs
+C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarListener.cs
+C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarBaseListener.cs
+C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarVisitor.cs
+C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\obj\Debug\net7.0\MyGrammarBaseVisitor.cs

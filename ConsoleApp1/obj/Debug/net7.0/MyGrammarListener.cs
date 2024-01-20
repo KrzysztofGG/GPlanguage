@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\krzys\Desktop\GPlanguage\ConsoleApp1\Content\MyGrammar.g4 by ANTLR 4.6.6
+// Generated from C:\Users\ogsimp\Desktop\genetycz\GPlanguage\ConsoleApp1\Content\MyGrammar.g4 by ANTLR 4.6.6
 
 // Unreachable code detected
 #pragma warning disable 0162

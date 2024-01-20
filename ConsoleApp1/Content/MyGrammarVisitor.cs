@@ -18,6 +18,10 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         _inputCounter = 0;
         operations = 0;
         _input = input;
+        // for (int i = 0; i < input.Count; i++)
+        // {
+        //     this.NumVariables.Add($"X{i}",input[i]);
+        // }
         this.maxOperations = maxOperations;
     }
 

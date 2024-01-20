@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\krzys\\Desktop\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj": {}
+    "C:\\Users\\ogsimp\\Desktop\\genetycz\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\krzys\\Desktop\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj": {
+    "C:\\Users\\ogsimp\\Desktop\\genetycz\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\krzys\\Desktop\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj",
+        "projectUniqueName": "C:\\Users\\ogsimp\\Desktop\\genetycz\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj",
         "projectName": "ConsoleApp1",
-        "projectPath": "C:\\Users\\krzys\\Desktop\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj",
-        "packagesPath": "C:\\Users\\krzys\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\krzys\\Desktop\\GPlanguage\\ConsoleApp1\\obj\\",
+        "projectPath": "C:\\Users\\ogsimp\\Desktop\\genetycz\\GPlanguage\\ConsoleApp1\\ConsoleApp1.csproj",
+        "packagesPath": "C:\\Users\\ogsimp\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ogsimp\\Desktop\\genetycz\\GPlanguage\\ConsoleApp1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\krzys\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ogsimp\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -47,6 +47,10 @@
             "Antlr4.Runtime": {
               "target": "Package",
               "version": "[4.6.6, )"
+            },
+            "ScottPlot": {
+              "target": "Package",
+              "version": "[5.0.19, )"
             }
           },
           "imports": [
@@ -65,7 +69,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.114\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }
