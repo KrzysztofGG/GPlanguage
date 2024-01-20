@@ -18,6 +18,13 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         _inputCounter = 0;
         operations = 0;
         _input = input;
+        foreach (var i in input)
+        {
+            // NumVariables[]
+            var varName = "X" + _inputCounter.ToString();
+            NumVariables[varName] = _input[_inputCounter % _input.Count];
+            _inputCounter++;
+        }
         this.maxOperations = maxOperations;
     }
 
@@ -29,7 +36,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            // Console.WriteLine(e.Message);
             return _output;
         }
 
@@ -69,9 +76,9 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     {
         handleOperations();
         var value = Visit(context.numeric_value());
-        _output.Add((string) value);
-        Console.Write(value);
-        Console.Write('\n');
+        _output.Add(value.ToString());
+        // Console.Write(value);
+        // Console.Write('\n');
         return value;
     }
     public override object? VisitPrintBool(MyGrammarParser.PrintBoolContext context)
@@ -79,8 +86,8 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         handleOperations();
         var value = Visit(context.bool_value());
         _output.Add((string) value);
-        Console.Write(value);
-        Console.Write('\n');
+        // Console.Write(value);
+        // Console.Write('\n');
         return value;
     }
 
@@ -124,11 +131,12 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitBoolVarVal(MyGrammarParser.BoolVarValContext context)
     {
+        // return true;
         var varName = context.BOOL_VAR().GetText();
         
         if(!BoolVariables.ContainsKey(varName))
             throw new Exception($"Variable {varName} is not defined");
-
+        
         return BoolVariables[varName];
     }
 
@@ -153,9 +161,13 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitCompVal(MyGrammarParser.CompValContext context)
     {
+        // return 100;
         var left = Visit(context.numeric_value(0));
         var right = Visit(context.numeric_value(1));
-
+        if (left is string)
+            left = Convert.ToDouble(left);
+        if (right is string)
+            right = Convert.ToDouble(right);
         if (left is double l && right is double r)
         {
             if (context.comparisson_type().EQ() != null)
@@ -214,6 +226,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
 
     public override object? VisitParenBoolVal(MyGrammarParser.ParenBoolValContext context)
     {
+        return true;
         return Visit(context.bool_value());
     }
     

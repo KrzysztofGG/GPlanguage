@@ -4,8 +4,11 @@ public class InputNode:Node{
     public InputNode(){
         this.val = RandomGenerator.generateRandomVariable();
     }
+    public InputNode(int num){
+        this.val = "X"+num;
+    }
         public override string ToString()
     {
-        return $"input({val})\n";
+        return $"scan({val})\n";
     }
 }

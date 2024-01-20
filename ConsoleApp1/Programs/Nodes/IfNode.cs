@@ -23,12 +23,13 @@ public class IfNode:Node{
             indent+="   ";
         }
         string res = "";
-        res+=$"If({condition})";
+        res+=$"if({condition})";
         res+="{\n";
         foreach(Node n in nodes){
             res+=indent+n.ToString();
         }
-        res+=indent.Substring(0, indentAmount)+"}\n";
+        
+        res+=indent.Substring(0, Math.Max(indentAmount,0))+"}\n";
         return res;
     }
 }

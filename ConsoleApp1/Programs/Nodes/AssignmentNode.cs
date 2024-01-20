@@ -5,7 +5,8 @@ public class AssignmentNode:Node{
     String operand;
     public AssignmentNode(){
         this.firstVal = RandomGenerator.generateRandomVariable();
-        this.operand = RandomGenerator.generateRandomOperator();
+        this.operand = "=";
+        // this.operand = RandomGenerator.generateRandomOperator();
         this.secodnVal = RandomGenerator.generateRandomInt(-1000,1000).ToString();
     }
 

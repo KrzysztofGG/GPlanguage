@@ -10,6 +10,6 @@ public class BooleanNode:Node{
     }
         public override string ToString()
     {
-        return $"{firstVal}{comparator}{secodnVal}";
+        return $"{firstVal} {comparator} {secodnVal}";
     }
 }
