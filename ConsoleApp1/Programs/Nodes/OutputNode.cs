@@ -7,6 +7,6 @@ public class OutputNode:Node{
     }
         public override string ToString()
     {
-        return $"output({val})\n";
+        return $"print({val})\n";
     }
 }
