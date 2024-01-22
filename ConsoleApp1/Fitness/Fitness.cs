@@ -1,6 +1,6 @@
 public class Fitness{
-    static double punishment = 1e12;
-    static double mult_punishment = 1e6;
+    static double punishment = 100000;
+    static double mult_punishment = 100;
     List<Target> targets;
 
     public Fitness(string filename){
@@ -20,19 +20,25 @@ public class Fitness{
             }
             targets.Add(target);
         }
-        foreach(Target t in targets){
-            Console.WriteLine(t);
-        }
+        // foreach(Target t in targets){
+        //     Console.WriteLine(t);
+        // }
     }
 
     public double calculateFitness(Individual individual){
         double fitness = 0;
+        
         foreach(var target in targets)
         {
             // Console.WriteLine(individual.program);
             var output = individual.Run(target.Inputs);
-            fitness -= evaluate(output, target.ExpectedOutputs);
+            fitness += evaluate(output, target.ExpectedOutputs);
         }
+
+        if (fitness == 0) {
+            int x = 123;
+        }
+
         // Console.WriteLine("FITNESS: "+fitness);
         individual.fitness = fitness;
         return fitness;
@@ -40,12 +46,20 @@ public class Fitness{
 
     public double evaluate(List<string> outputs, List<string> expectedOutputs){
         double res = 0;
-        for(int i=0; i< expectedOutputs.Count; i++){
-            if(i>= outputs.Count){
+        if (outputs.Count == 0)
+        {
+            res += 100000;
+        }
+        if (outputs.Count != expectedOutputs.Count)
+        {
+            res += 1000;
+        }
+        for(int i=0; i< Math.Max(expectedOutputs.Count, outputs.Count); i++){
+            if(i>= outputs.Count || i>=expectedOutputs.Count){
                 res += punishment;
             }
             else{
-                res += punishment * Math.Abs(Int32.Parse(outputs[i]) - Int32.Parse(expectedOutputs[i]));
+                res += 1000 * Math.Abs(Int32.Parse(outputs[i]) - Int32.Parse(expectedOutputs[i]));
             }
         }
         return res;
