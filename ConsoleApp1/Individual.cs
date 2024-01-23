@@ -25,7 +25,7 @@ public class Individual{
 
         MyGrammarParser.ProgramContext programContext = myGrammarParser.program();
 
-        MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, 16);
+        MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, -1);
         var res = myGrammarVisitor.visitWithOutput(programContext);
 
         return res;
@@ -52,8 +52,8 @@ public class Individual{
             }
             else
             {
-                i2_copy.program.nodes[i] = RandomGenerator.generateRandomNode(2);
-                i1_copy.program.nodes[i] = RandomGenerator.generateRandomNode(2);
+                // i2_copy.program.nodes[i] = RandomGenerator.generateRandomNode(2);
+                // i1_copy.program.nodes[i] = RandomGenerator.generateRandomNode(2);
             }
         }
         return (i1, i2);
