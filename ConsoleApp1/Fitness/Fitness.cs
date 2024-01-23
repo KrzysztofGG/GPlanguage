@@ -1,5 +1,5 @@
 public class Fitness{
-    static double punishment = 100000;
+    static double punishment = 10000;
     static double mult_punishment = 100;
     List<Target> targets;
 
@@ -20,9 +20,7 @@ public class Fitness{
             }
             targets.Add(target);
         }
-        // foreach(Target t in targets){
-        //     Console.WriteLine(t);
-        // }
+
     }
 
     public double calculateFitness(Individual individual){
@@ -30,7 +28,6 @@ public class Fitness{
         
         foreach(var target in targets)
         {
-            // Console.WriteLine(individual.program);
             var output = individual.Run(target.Inputs);
             fitness += evaluate(output, target.ExpectedOutputs);
         }
@@ -38,21 +35,62 @@ public class Fitness{
         if (fitness == 0) {
             int x = 123;
         }
-
-        // Console.WriteLine("FITNESS: "+fitness);
+        
         individual.fitness = fitness;
         return fitness;
     }
 
     public double evaluate(List<string> outputs, List<string> expectedOutputs){
+        if (expectedOutputs.Contains("specific"))
+        {
+            return evaluateSpecificIndex(outputs, expectedOutputs);
+        }
+        
+        if (expectedOutputs.Contains("any"))
+        {
+            return evaluateAnyNumberOfOutputs(outputs, expectedOutputs);
+        }
+
+        return evaluateGivenNumberOfOutputs(outputs, expectedOutputs);
+
+    }
+
+    public double evaluateSpecificIndex(List<string> outputs, List<string> expectedOutputs)
+    {
+        double res = 0;
+        if (outputs.Count != 0)
+        {
+            double expectedAtIndex = double.Parse(expectedOutputs[0]);
+            double outputAtIndex = double.Parse(outputs[0]);
+            return Math.Abs(expectedAtIndex - outputAtIndex) * 1000;
+        }
+
+        return punishment;
+    }
+
+    public double evaluateAnyNumberOfOutputs(List<string> outputs, List<string> expectedOutputs, Dictionary<int, String> expectedIndexes = null)
+    {
+        double res = 0;
+        if (outputs.Count != 0){
+            List<double> doubleList = outputs.Select(s => double.Parse(s)).ToList();
+            var expectedVal = double.Parse(expectedOutputs[0]);
+            double closestVal = findClosestValue(doubleList, expectedVal);
+            return Math.Abs(closestVal - expectedVal) * 1000;
+        }
+
+        return punishment;
+    }
+
+    public double evaluateGivenNumberOfOutputs(List<string> outputs, List<string> expectedOutputs)
+    {
         double res = 0;
         if (outputs.Count == 0)
         {
-            res += 100000;
+            res += punishment;
         }
         if (outputs.Count != expectedOutputs.Count)
         {
-            res += 1000;
+            res += punishment;
         }
         for(int i=0; i< Math.Max(expectedOutputs.Count, outputs.Count); i++){
             if(i>= outputs.Count || i>=expectedOutputs.Count){
@@ -63,5 +101,11 @@ public class Fitness{
             }
         }
         return res;
+    }
+
+    public double findClosestValue(List<double> numbers, double target)
+    {
+        var closestNumber = numbers.OrderBy(x => Math.Abs(x - target)).First();
+        return closestNumber;
     }
 }
