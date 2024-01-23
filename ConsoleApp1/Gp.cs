@@ -3,7 +3,7 @@ using System.Security.AccessControl;
 
 static class Gp{
 
-    static int POPULATION_SIZE = 10;
+    static int POPULATION_SIZE = 20;
     static int MAX_GENERATIONS = 100;
     private static int MAX_OPERATIONS = 3;
     private static int FINISH_THRESHOLD = 0;
@@ -25,12 +25,16 @@ static class Gp{
 
 
     public static int inputSize = 0;
+    public static List<int> definedVariables = new List<int>();
 
     private static void setInputSize(string file)
     {
         var line = System.IO.File.ReadLines(file).First();
         var slice = line.Split(":");
         inputSize = slice[0].Trim().Split(" ").Length;
+        for(int i=0; i<inputSize; ++i)
+            definedVariables.Add(i);
+        // definedVariables = inputSize;
 
     }
     public static void createPopulation()

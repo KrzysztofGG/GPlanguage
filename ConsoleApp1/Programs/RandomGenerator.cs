@@ -9,10 +9,6 @@ public class RandomGenerator{
     // {
     //     return program.nodes[];
     // }
-    public static string generateVariable(int i)
-    {
-        return "X" + i;
-    }    
     
 public static Node generateRandomNode(int depth){
     int val = random.Next(1,5);
@@ -34,10 +30,24 @@ public static Node generateRandomNode(int depth){
     }
     return new IfNode(depth);
 }
-public static string generateRandomVariable(){
-    int val = random.Next(0,6);
+public static string generateRandomVariable(bool onlyDefined)
+{
+    int val;
+    if (onlyDefined)
+    {
+        int id = random.Next(Gp.definedVariables.Count - 1);
+        val = Gp.definedVariables[id];
+    }
+    else
+    {
+        val = random.Next(0,6);
+        if (!Gp.definedVariables.Contains(val))
+            Gp.definedVariables.Add(val);
+    }
+    
     return "X"+val;
 }
+
 public static string generateRandomOperator(){
     int val = random.Next(0,5);
     if(val==0){
@@ -54,10 +64,10 @@ public static string generateRandomOperator(){
     }
     return "/=";
 }
-public static string generateRandomValueOrVariable(){
+public static string generateRandomValueOrVariable(bool onlyDefined){
     int val = random.Next(0,2);
     if(val==0){
-        return generateRandomVariable();
+        return generateRandomVariable(onlyDefined);
     }
     return generateRandomInt(-1000,1000).ToString();
 }
