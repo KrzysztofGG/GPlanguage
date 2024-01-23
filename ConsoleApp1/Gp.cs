@@ -11,7 +11,7 @@ static class Gp{
     private static int GENERATION_NUMBER = 0;
     public static List<double> averageFitnessArr = new List<double>();
     public static List<double> bestFitnessArr = new List<double>();
-
+    
     private static int OPERATIONS_PER_GENERATION = 8500;
     private static int TOURNAMENT_SIZE = 2;
 
@@ -22,6 +22,17 @@ static class Gp{
     public static List<Individual> population = new List<Individual>();
     public static Individual bestIndividual;
     public static Fitness fitness;
+
+
+    public static int inputSize = 0;
+
+    private static void setInputSize(string file)
+    {
+        var line = System.IO.File.ReadLines(file).First();
+        var slice = line.Split(":");
+        inputSize = slice[0].Trim().Split(" ").Length;
+
+    }
     public static void createPopulation()
     {
         for (int i = 0; i < POPULATION_SIZE; i++)
@@ -178,8 +189,11 @@ static class Gp{
 
         return bestIndex;
     }
-    static void Main(){
-        fitness = new Fitness("../../../data/problem.txt");
+    static void Main()
+    {
+        var filePath = "../../../data/problem10.txt";
+        fitness = new Fitness(filePath);
+        setInputSize(filePath);
         createPopulation();
         runEvolve();
         SaveListToCsv(averageFitnessArr, "./average.txt");
