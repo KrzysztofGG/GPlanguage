@@ -9,16 +9,20 @@ public class RandomGenerator{
     // {
     //     return program.nodes[];
     // }
+    public static string generateVariable(int i)
+    {
+        return "X" + i;
+    }    
     
 public static Node generateRandomNode(int depth){
-    int val = random.Next(0,5);
+    int val = random.Next(1,5);
     if(depth<=1){
-        val = random.Next(0,3);
+        val = random.Next(1,3);
     }
 
-    if(val==0){
-        return new InputNode();
-    }
+    // if(val==0){
+    //     return new InputNode();
+    // }
     if(val==1){
         return new AssignmentNode();
     }

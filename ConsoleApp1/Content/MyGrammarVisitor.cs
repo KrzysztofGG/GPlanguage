@@ -44,6 +44,9 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     }
     public void handleOperations()
     {
+        if (maxOperations == -1)
+            return;
+        
         operations++;
         if (operations > maxOperations)
         {

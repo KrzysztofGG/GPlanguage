@@ -2,7 +2,7 @@ public class InputNode:Node{
     public string val;
 
     public InputNode(){
-        this.val = RandomGenerator.generateRandomVariable();
+        // this.val = RandomGenerator.generateRandomVariable();
     }
     public InputNode(int num){
         this.val = "X"+num;

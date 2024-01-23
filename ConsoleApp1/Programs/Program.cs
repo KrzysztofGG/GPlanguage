@@ -7,11 +7,17 @@ public class Program{
     public Program(){}
     public Program(int depth, int maxNumOfNodes){
         int numOfNodes = RandomGenerator.generateRandomInt(1, maxNumOfNodes);
-        for(int i = 0; i<numOfNodes; i++){
+        for (int i = 0; i < Gp.inputSize; ++i)
+        {
+            this.nodes.Add(new InputNode(i));
+        }
+        for(int i = 0; i<numOfNodes ; i++){
             this.nodes.Add(RandomGenerator.generateRandomNode(depth));
         }
     }
 
+    
+    
     public Program(List<Node> nodes)
     {
         this.nodes = new List<Node>(nodes);
@@ -31,8 +37,8 @@ public class Program{
         var offspring1 = new Program(parent1.nodes);
         var offspring2 = new Program(parent2.nodes);
 
-        var pos1 = RandomGenerator.generateRandomInt(0, offspring1.nodes.Count - 1);
-        var pos2 = RandomGenerator.generateRandomInt(0, offspring2.nodes.Count - 1);
+        var pos1 = RandomGenerator.generateRandomInt(Gp.inputSize, offspring1.nodes.Count - 1);
+        var pos2 = RandomGenerator.generateRandomInt(Gp.inputSize, offspring2.nodes.Count - 1);
         
         var crossoverList1 = offspring1.nodes.GetRange(pos1, offspring1.nodes.Count - pos1);
         var crossoverList2 = offspring2.nodes.GetRange(pos2, offspring2.nodes.Count - pos2);
@@ -54,7 +60,7 @@ public class Program{
 
     public void Mutate()
     {
-        var randomIndex = RandomGenerator.generateRandomInt(0, this.nodes.Count - 1);
+        var randomIndex = RandomGenerator.generateRandomInt(Gp.inputSize, this.nodes.Count - 1);
         this.nodes[randomIndex] = RandomGenerator.generateRandomNode(Gp.MAX_DEPTH);
         
     }

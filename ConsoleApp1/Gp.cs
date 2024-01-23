@@ -3,7 +3,7 @@ using System.Security.AccessControl;
 
 static class Gp{
 
-    static int POPULATION_SIZE = 10000;
+    static int POPULATION_SIZE = 10;
     static int MAX_GENERATIONS = 100;
     private static int MAX_OPERATIONS = 3;
     private static int FINISH_THRESHOLD = 0;
@@ -12,7 +12,7 @@ static class Gp{
     public static List<double> averageFitnessArr = new List<double>();
     public static List<double> bestFitnessArr = new List<double>();
     
-    private static int OPERATIONS_PER_GENERATION = 8500;
+    private static int OPERATIONS_PER_GENERATION = 850;
     private static int TOURNAMENT_SIZE = 2;
 
     public static Random random = new Random();
@@ -191,7 +191,7 @@ static class Gp{
     }
     static void Main()
     {
-        var filePath = "../../../data/problem10.txt";
+        var filePath = "../../../data/problem7.txt";
         fitness = new Fitness(filePath);
         setInputSize(filePath);
         createPopulation();
