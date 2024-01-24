@@ -35,20 +35,20 @@ public static string generateRandomVariable(){
     return "X"+val;
 }
 public static string generateRandomOperator(){
-    int val = random.Next(0,5);
+    int val = random.Next(1,5);
     if(val==0){
         return "=";
     }
     if(val==1){
-        return "+=";
+        return "+";
     }
     if(val==2){
-        return "-=";
+        return "-";
     }
     if(val==3){
-        return "*=";
+        return "*";
     }
-    return "/=";
+    return "/";
 }
 public static string generateRandomValueOrVariable(){
     int val = random.Next(0,2);

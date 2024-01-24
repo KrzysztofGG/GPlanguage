@@ -1,0 +1,10 @@
+﻿if(X0 <= X3){
+   X0=875
+   scan(X4)
+}
+if(X0 <= X3){
+   X0=875
+   scan(X4)
+}
+scan(X3)
+print(X3)

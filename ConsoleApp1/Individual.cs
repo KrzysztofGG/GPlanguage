@@ -8,7 +8,7 @@ public class Individual{
     public Individual(){}
     public Individual(int maxDepth, int numOfNodes){
         program = new Program(maxDepth, numOfNodes);
-        fitness = Gp.fitness.calculateFitness(this);
+        // fitness = Gp.fitness.calculateFitness(this);
     }
 
     public Individual(Program program)

@@ -62,10 +62,10 @@ public class Fitness{
         {
             double expectedAtIndex = double.Parse(expectedOutputs[0]);
             double outputAtIndex = double.Parse(outputs[0]);
-            return Math.Abs(expectedAtIndex - outputAtIndex) * 1000;
+            return Math.Abs(expectedAtIndex - outputAtIndex);
         }
 
-        return punishment;
+        return punishment*10;
     }
 
     public double evaluateAnyNumberOfOutputs(List<string> outputs, List<string> expectedOutputs, Dictionary<int, String> expectedIndexes = null)
@@ -75,10 +75,10 @@ public class Fitness{
             List<double> doubleList = outputs.Select(s => double.Parse(s)).ToList();
             var expectedVal = double.Parse(expectedOutputs[0]);
             double closestVal = findClosestValue(doubleList, expectedVal);
-            return Math.Abs(closestVal - expectedVal) * 1000;
+            return Math.Abs(closestVal - expectedVal)*100;
         }
 
-        return punishment;
+        return punishment*10;
     }
 
     public double evaluateGivenNumberOfOutputs(List<string> outputs, List<string> expectedOutputs)
@@ -87,6 +87,7 @@ public class Fitness{
         if (outputs.Count == 0)
         {
             res += punishment;
+            return res * 10;
         }
         if (outputs.Count != expectedOutputs.Count)
         {
@@ -97,7 +98,7 @@ public class Fitness{
                 res += punishment;
             }
             else{
-                res += 1000 * Math.Abs(Int32.Parse(outputs[i]) - Int32.Parse(expectedOutputs[i]));
+                res += Math.Abs(double.Parse(outputs[i]) - double.Parse(expectedOutputs[i]));
             }
         }
         return res;

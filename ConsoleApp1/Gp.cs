@@ -5,7 +5,7 @@ static class Gp{
 
     static int POPULATION_SIZE = 10000;
     static int MAX_GENERATIONS = 100;
-    private static int MAX_OPERATIONS = 3;
+    private static int MAX_OPERATIONS = 5;
     private static int FINISH_THRESHOLD = 0;
     public static int MAX_DEPTH = 3;
     private static int GENERATION_NUMBER = 0;
@@ -179,11 +179,17 @@ static class Gp{
         return bestIndex;
     }
     static void Main(){
-        fitness = new Fitness("../../../data/problem.txt");
+        fitness = new Fitness("../../../data/problem11.txt");
         createPopulation();
         runEvolve();
         SaveListToCsv(averageFitnessArr, "./average.txt");
         SaveListToCsv(bestFitnessArr, "./best.txt");
+        // Program p = new Program();
+        // Node n = new InputNode();
+        // p.nodes.Add(n);
+        // Individual i = new Individual(p);
+        // fitness.calculateFitness(i);
+
 
 
     }
