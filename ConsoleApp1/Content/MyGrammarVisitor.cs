@@ -1,14 +1,15 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System.Globalization;
+using Antlr4.Runtime.Tree;
 using ConsoleApp1.Content;
 
 namespace ConsoleApp1.Content;
 
-public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
+public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
 {
-    private Dictionary<string, object?> NumVariables { get; } = new();
-    private Dictionary<string, object?> BoolVariables { get; } = new();
+    private Dictionary<string, double> NumVariables { get; } = new();
+    private Dictionary<string, bool> BoolVariables { get; } = new();
     private List<string> _output = new();
-    private List<string> _input = new();
+    private List<Value>? _input = new();
     private int _inputCounter;
     private int operations;
     private int maxOperations;
@@ -17,12 +18,12 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     { 
         _inputCounter = 0;
         operations = 0;
-        _input = input;
+        _input = input.Select(x => new Value(x)).ToList();
         foreach (var i in input)
         {
             // NumVariables[]
             var varName = "X" + _inputCounter.ToString();
-            NumVariables[varName] = _input[_inputCounter % _input.Count];
+            NumVariables[varName] = _input[_inputCounter % _input.Count].NumValue;
             _inputCounter++;
         }
         this.maxOperations = maxOperations;
@@ -44,6 +45,8 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
     }
     public void handleOperations()
     {
+        if (maxOperations == -1)
+            return;
         operations++;
         if (operations > maxOperations)
         {
@@ -51,214 +54,183 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         }
     }
 
-    public override object? VisitIfStatement(MyGrammarParser.IfStatementContext context)
+    public override Value VisitIfStatement(MyGrammarParser.IfStatementContext context)
     {
         handleOperations();
-        var value =  (bool) Visit(context.bool_value());
-        if (value)
+        var value =  Visit(context.bool_value());
+        if (value.BoolValue)
         {
             return Visit(context.expressions());
         }
         return value;
     }
 
-    public override object? VisitWhileStatement(MyGrammarParser.WhileStatementContext context)
+    public override Value VisitWhileStatement(MyGrammarParser.WhileStatementContext context)
     {
         handleOperations();
-        while ((bool)Visit(context.bool_value()))
+        while (Visit(context.bool_value()).BoolValue)
         {
             Visit(context.expressions());
         }
 
-        return Visit(context.bool_value());
+        return new Value(Visit(context.bool_value()).BoolValue);
     }
-    public override object? VisitPrintNum(MyGrammarParser.PrintNumContext context)
+    public override Value VisitPrintNum(MyGrammarParser.PrintNumContext context)
     {
         handleOperations();
         var value = Visit(context.numeric_value());
-        _output.Add(value.ToString());
+        _output.Add(value.NumValue.ToString(CultureInfo.InvariantCulture));
         // Console.Write(value);
         // Console.Write('\n');
         return value;
     }
-    public override object? VisitPrintBool(MyGrammarParser.PrintBoolContext context)
+    public override Value VisitPrintBool(MyGrammarParser.PrintBoolContext context)
     {
         handleOperations();
         var value = Visit(context.bool_value());
-        _output.Add((string) value);
+        _output.Add(value.BoolValue.ToString());
         // Console.Write(value);
         // Console.Write('\n');
         return value;
     }
 
-    public override object? VisitScanNum(MyGrammarParser.ScanNumContext context)
+    public override Value VisitScanNum(MyGrammarParser.ScanNumContext context)
     {
         handleOperations();
         var varName = context.NUM_VAR().GetText();
-        NumVariables[varName] = _input[_inputCounter % _input.Count];
+        NumVariables[varName] = _input[_inputCounter % _input.Count].NumValue;
         _inputCounter++;
-        return NumVariables[varName];
+        return new Value(NumVariables[varName]);
     }
-    public override object? VisitScanBool(MyGrammarParser.ScanBoolContext context)
+    public override Value VisitScanBool(MyGrammarParser.ScanBoolContext context)
     {
         handleOperations();
         var varName = context.BOOL_VAR().GetText();
-        BoolVariables[varName] = _input[_inputCounter % _input.Count];
+        BoolVariables[varName] = _input[_inputCounter % _input.Count].BoolValue;
         _inputCounter++;
-        return BoolVariables[varName];
+        return new Value(BoolVariables[varName]);
     }
-    public override object? VisitAssignNum(MyGrammarParser.AssignNumContext context)
+    public override Value VisitAssignNum(MyGrammarParser.AssignNumContext context)
     {
         handleOperations();
         var varName = context.NUM_VAR().GetText();
         var value = Visit(context.numeric_value());
 
-        NumVariables[varName] = value;
+        NumVariables[varName] = value.NumValue;
         
-        return null;
+        return new Value(NumVariables[varName]);
     }
 
-    public override object? VisitAssignBool(MyGrammarParser.AssignBoolContext context)
+    public override Value VisitAssignBool(MyGrammarParser.AssignBoolContext context)
     {
         handleOperations();
         var varName = context.BOOL_VAR().GetText();
         var value = Visit(context.bool_value());
 
-        BoolVariables[varName] = value;
+        BoolVariables[varName] = value.BoolValue;
         
-        return null;
+        return new Value(BoolVariables[varName]);
     }
 
-    public override object? VisitBoolVarVal(MyGrammarParser.BoolVarValContext context)
+    public override Value VisitBoolVarVal(MyGrammarParser.BoolVarValContext context)
     {
-        // return true;
         var varName = context.BOOL_VAR().GetText();
+
+        if (!BoolVariables.ContainsKey(varName))
+            // throw new Exception($"Variable {varName} is not defined");
+            return new Value(false);
         
-        if(!BoolVariables.ContainsKey(varName))
-            throw new Exception($"Variable {varName} is not defined");
-        
-        return BoolVariables[varName];
+        return new Value(BoolVariables[varName]);
     }
 
-    public override object? VisitTrueVal(MyGrammarParser.TrueValContext context)
+    public override Value VisitTrueVal(MyGrammarParser.TrueValContext context)
     {
-        return true;
+        return new Value(true);
     }
-    public override object? VisitFalseVal(MyGrammarParser.FalseValContext context)
+    public override Value VisitFalseVal(MyGrammarParser.FalseValContext context)
     {
-        return false;
+        return new Value(false);
     }
     
-    public override object? VisitNotVal(MyGrammarParser.NotValContext context)
+    public override Value VisitNotVal(MyGrammarParser.NotValContext context)
     {
 
         var value = Visit(context.bool_value());
-        if (value is bool v)
-            return !v;
+        return Value.Not(value);
 
         throw new Exception($"{value} not boolean");
     }
 
-    public override object? VisitCompVal(MyGrammarParser.CompValContext context)
+    public override Value VisitCompVal(MyGrammarParser.CompValContext context)
     {
         // return 100;
         var left = Visit(context.numeric_value(0));
         var right = Visit(context.numeric_value(1));
-        if (left is string)
-            left = Convert.ToDouble(left);
-        if (right is string)
-            right = Convert.ToDouble(right);
-        if (left is double l && right is double r)
-        {
-            if (context.comparisson_type().EQ() != null)
-                return l == r;
-            else if (context.comparisson_type().NEQ() != null)
-                return l != r;
-            else if (context.comparisson_type().LE() != null)
-                return l < r;
-            else if (context.comparisson_type().LEQ() != null)
-                return l <= r;
-            else if (context.comparisson_type().GE() != null)
-                return l > r;
-            else if (context.comparisson_type().GEQ() != null)
-                return l >= r;
-            else
-                throw new Exception("Invalid comparison operator");
-        }
-        if (left is int li && right is int ri)
-        {
-            if (context.comparisson_type().EQ() != null)
-                return li == ri;
-            else if (context.comparisson_type().NEQ() != null)
-                return li != li;
-            else if (context.comparisson_type().LE() != null)
-                return li < ri;
-            else if (context.comparisson_type().LEQ() != null)
-                return li <= ri;
-            else if (context.comparisson_type().GE() != null)
-                return li > ri;
-            else if (context.comparisson_type().GEQ() != null)
-                return li >= ri;
-            else
-                throw new Exception("Invalid comparison operator");
-        }
-
-        return null;
+        
+        if (context.comparisson_type().EQ() != null)
+            return Value.Equal(left, right);
+        else if (context.comparisson_type().NEQ() != null)
+            return Value.NotEqual(left, right);
+        else if (context.comparisson_type().LE() != null)
+            return Value.Less(left, right);
+        else if (context.comparisson_type().LEQ() != null)
+            return Value.LessOrEqual(left, right);
+        else if (context.comparisson_type().GE() != null)
+            return Value.Greater(left, right);
+        else if (context.comparisson_type().GEQ() != null)
+            return Value.GreaterOrEqual(left, right);
+        else
+            throw new Exception("Invalid comparison operator");
+        
     }
 
-    public override object? VisitLogicVal(MyGrammarParser.LogicValContext context)
+    public override Value VisitLogicVal(MyGrammarParser.LogicValContext context)
     {
         var left = Visit(context.bool_value(0));
         var right = Visit(context.bool_value(1));
 
-        if (left is bool l && right is bool r)
-        {
-            if (context.logic_operator().AND() != null)
-                return l && r;
-            
-            if (context.logic_operator().OR() != null)
-                return l || r;
-        }
 
-        return null;
-
+        if (context.logic_operator().AND() != null)
+            return Value.And(left, right);
+        if (context.logic_operator().OR() != null)
+            return Value.Or(left, right);
+        else
+            throw new Exception("Invalid Logic operator");
+        
     }
 
-    public override object? VisitParenBoolVal(MyGrammarParser.ParenBoolValContext context)
+    public override Value VisitParenBoolVal(MyGrammarParser.ParenBoolValContext context)
     {
-        return true;
         return Visit(context.bool_value());
     }
     
-    public override object? VisitNumVal(MyGrammarParser.NumValContext context)
+    public override Value VisitNumVal(MyGrammarParser.NumValContext context)
     {
-        return double.Parse(context.NUMBER().GetText());
+        // return double.Parse(context.NUMBER().GetText());
+        return new Value(double.Parse(context.NUMBER().GetText()));
     }
+    
 
-    public override object? VisitNumVarVal(MyGrammarParser.NumVarValContext context)
+    public override Value VisitNumVarVal(MyGrammarParser.NumVarValContext context)
     {
         
         var varName = context.NUM_VAR().GetText();
 
         if (!NumVariables.ContainsKey(varName))
-            throw new Exception($"Variable {varName} is not defined");
-        
+            // throw new Exception($"Variable {varName} is not defined");
+            return new Value(0);
 
-        return NumVariables[varName];
+        return new Value(NumVariables[varName]);
     }
 
-    public override object? VisitSubVal(MyGrammarParser.SubValContext context)
+    public override Value VisitSubVal(MyGrammarParser.SubValContext context)
     {
         var value = Visit(context.numeric_value());
-        if (value is double vd)
-            return -vd;
-        if (value is int vi)
-            return -vi;
+        return new Value(-value.NumValue);
         
-        throw new Exception($"{value} not a number");
     }
 
-    public override object? VisitAritStrongVal(MyGrammarParser.AritStrongValContext context)
+    public override Value VisitAritStrongVal(MyGrammarParser.AritStrongValContext context)
     {
         var left = Visit(context.numeric_value(0));
         var right = Visit(context.numeric_value(1));
@@ -266,45 +238,44 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         var op = context.aritmetic_operator_strong().GetText();
         return op switch
         {
-            "*" => Multiply(left, right),
-            "/" => Divide(left, right),
-            "%" => Modulo(left, right),
+            "*" => Value.Multiply(left, right),
+            "/" => Value.Divide(left, right),
+            "%" => Value.Modulo(left, right),
             _ => throw new NotImplementedException(),
         };
     }
     
-    private static object? Multiply(object? left, object? right)
-    {
-        if(left is double ld && right is double rd)
-            return ld * rd;
-        if(left is int li && right is int ri)
-            return li * ri;
-        
-        throw new Exception($"Cannot multiply values of types {left.GetType()} and {right.GetType()}");
-    }
+    // private static object? Multiply(object? left, object? right)
+    // {
+    //     if(left is double ld && right is double rd)
+    //         return ld * rd;
+    //     if(left is int li && right is int ri)
+    //         return li * ri;
+    //     
+    //     throw new Exception($"Cannot multiply values of types {left.GetType()} and {right.GetType()}");
+    // }
     
-    private static object? Divide(object? left, object? right)
-    {
-        //Throw devide by zero error?
-        if(left is double ld && right is double rd)
-            return ld / rd;
-        if(left is int li && right is int ri)
-            return li / ri;
-        throw new Exception($"Cannot divide values of types {left.GetType()} and {right.GetType()}");
-    }
+    // private static object? Divide(object? left, object? right)
+    // {
+    //     if(left is double ld && right is double rd)
+    //         return ld / rd;
+    //     if(left is int li && right is int ri)
+    //         return li / ri;
+    //     throw new Exception($"Cannot divide values of types {left.GetType()} and {right.GetType()}");
+    // }
     
-    private static object? Modulo(object? left, object? right)
-    {
-        if (left is double ld && right is double rd)
-            throw new Exception("Modulo on double values");
-        
-        if(left is int li && right is int ri)
-            return li % ri;
-        
-        throw new Exception($"Cannot modulo values of types {left.GetType()} and {right.GetType()}");
-    }
+    // private static object? Modulo(object? left, object? right)
+    // {
+    //     if (left is double ld && right is double rd)
+    //         throw new Exception("Modulo on double values");
+    //     
+    //     if(left is int li && right is int ri)
+    //         return li % ri;
+    //     
+    //     throw new Exception($"Cannot modulo values of types {left.GetType()} and {right.GetType()}");
+    // }
     
-    public override object? VisitAritWeakVal(MyGrammarParser.AritWeakValContext context)
+    public override Value VisitAritWeakVal(MyGrammarParser.AritWeakValContext context)
     {
         var left = Visit(context.numeric_value(0));
         var right = Visit(context.numeric_value(1));
@@ -312,31 +283,29 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<object?>
         var op = context.aritmetic_operator_weak().GetText();
         return op switch
         {
-            "+" => Add(left, right),
-            "-" => Subtract(left, right),
+            "+" => Value.Add(left, right),
+            "-" => Value.Subtract(left, right),
             _ => throw new NotImplementedException(),
         };
     }
     
-    private static object? Add(object? left, object? right)
-    {
-        if(left is double ld && right is double rd)
-            return ld + rd;
-        if(left is int li && right is int ri)
-            return li + ri;
-        throw new Exception($"Cannot add values of types {left.GetType()} and {right.GetType()}");
-    }
+    // private static object? Add(object? left, object? right)
+    // {
+    //     if(left is double ld && right is double rd)
+    //         return ld + rd;
+    //     if(left is int li && right is int ri)
+    //         return li + ri;
+    //     throw new Exception($"Cannot add values of types {left.GetType()} and {right.GetType()}");
+    // }
     
-    private static object? Subtract(object? left, object? right)
-    {
-        if(left is double ld && right is double rd)
-            return ld - rd;
-        if(left is int li && right is int ri)
-            return li - ri;
-        throw new Exception($"Cannot subtract values of types {left.GetType()} and {right.GetType()}");
-    }
+    // private static object? Subtract(object? left, object? right)
+    // {
+    //     return (double)left - (double)right;
+    //     
+    //     throw new Exception($"Cannot subtract values of types {left.GetType()} and {right.GetType()}");
+    // }
 
-    public override object? VisitParenNumVal(MyGrammarParser.ParenNumValContext context)
+    public override Value VisitParenNumVal(MyGrammarParser.ParenNumValContext context)
     {
         return Visit(context.numeric_value());
     }

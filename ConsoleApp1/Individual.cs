@@ -25,7 +25,7 @@ public class Individual{
 
         MyGrammarParser.ProgramContext programContext = myGrammarParser.program();
 
-        MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, 16);
+        MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, -1);
         var res = myGrammarVisitor.visitWithOutput(programContext);
 
         return res;
