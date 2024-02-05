@@ -4,8 +4,8 @@ public class BooleanNode:Node{
     String secodnVal;
     String comparator;
     public BooleanNode(){
-        this.firstVal = RandomGenerator.generateRandomValueOrVariable();
-        this.secodnVal = RandomGenerator.generateRandomValueOrVariable();
+        this.firstVal = RandomGenerator.generateRandomVariable();
+        this.secodnVal = RandomGenerator.generateRandomVariable();
         this.comparator = RandomGenerator.generateRandomComparator();
     }
         public override string ToString()

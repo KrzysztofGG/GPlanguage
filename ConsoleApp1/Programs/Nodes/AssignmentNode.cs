@@ -1,8 +1,8 @@
 public class AssignmentNode:Node{
 
-    String firstVal;
-    String secodnVal;
-    String operand;
+    public String firstVal;
+    public String secodnVal;
+    public String operand;
     public AssignmentNode(){
         this.firstVal = RandomGenerator.generateRandomVariable();
         Random random = new Random();

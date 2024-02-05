@@ -19,13 +19,10 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         _inputCounter = 0;
         operations = 0;
         _input = input.Select(x => new Value(x)).ToList();
-        foreach (var i in input)
-        {
-            // NumVariables[]
-            var varName = "X" + _inputCounter.ToString();
-            NumVariables[varName] = _input[_inputCounter % _input.Count].NumValue;
-            _inputCounter++;
-        }
+        // for (int i = 0; i < 7; i++)
+        // {
+        //     NumVariables["X" + i] = 0;
+        // }
         this.maxOperations = maxOperations;
     }
 
@@ -38,7 +35,8 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         catch (Exception e)
         {
             // Console.WriteLine(e.Message);
-            return _output;
+            return new List<string>();
+            // return _output;
         }
 
         return _output;
@@ -217,8 +215,8 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         var varName = context.NUM_VAR().GetText();
 
         if (!NumVariables.ContainsKey(varName))
-            // throw new Exception($"Variable {varName} is not defined");
-            return new Value(0);
+            throw new Exception($"Variable {varName} is not defined");
+            // return new Value(0);
 
         return new Value(NumVariables[varName]);
     }
@@ -245,35 +243,6 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         };
     }
     
-    // private static object? Multiply(object? left, object? right)
-    // {
-    //     if(left is double ld && right is double rd)
-    //         return ld * rd;
-    //     if(left is int li && right is int ri)
-    //         return li * ri;
-    //     
-    //     throw new Exception($"Cannot multiply values of types {left.GetType()} and {right.GetType()}");
-    // }
-    
-    // private static object? Divide(object? left, object? right)
-    // {
-    //     if(left is double ld && right is double rd)
-    //         return ld / rd;
-    //     if(left is int li && right is int ri)
-    //         return li / ri;
-    //     throw new Exception($"Cannot divide values of types {left.GetType()} and {right.GetType()}");
-    // }
-    
-    // private static object? Modulo(object? left, object? right)
-    // {
-    //     if (left is double ld && right is double rd)
-    //         throw new Exception("Modulo on double values");
-    //     
-    //     if(left is int li && right is int ri)
-    //         return li % ri;
-    //     
-    //     throw new Exception($"Cannot modulo values of types {left.GetType()} and {right.GetType()}");
-    // }
     
     public override Value VisitAritWeakVal(MyGrammarParser.AritWeakValContext context)
     {
@@ -289,21 +258,6 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         };
     }
     
-    // private static object? Add(object? left, object? right)
-    // {
-    //     if(left is double ld && right is double rd)
-    //         return ld + rd;
-    //     if(left is int li && right is int ri)
-    //         return li + ri;
-    //     throw new Exception($"Cannot add values of types {left.GetType()} and {right.GetType()}");
-    // }
-    
-    // private static object? Subtract(object? left, object? right)
-    // {
-    //     return (double)left - (double)right;
-    //     
-    //     throw new Exception($"Cannot subtract values of types {left.GetType()} and {right.GetType()}");
-    // }
 
     public override Value VisitParenNumVal(MyGrammarParser.ParenNumValContext context)
     {

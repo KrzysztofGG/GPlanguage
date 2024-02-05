@@ -28,8 +28,8 @@ public class Program{
 
     public static (Program, Program) Crossover(Program parent1, Program parent2)
     {
-        var offspring1 = new Program(parent1.nodes);
-        var offspring2 = new Program(parent2.nodes);
+        var offspring1 = new Program(new List<Node>(parent1.nodes));
+        var offspring2 = new Program(new List<Node>(parent2.nodes));
 
         var pos1 = RandomGenerator.generateRandomInt(0, offspring1.nodes.Count - 1);
         var pos2 = RandomGenerator.generateRandomInt(0, offspring2.nodes.Count - 1);

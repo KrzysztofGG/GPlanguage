@@ -4,21 +4,20 @@ using System.Security.AccessControl;
 static class Gp{
 
     static int POPULATION_SIZE = 10000;
-    static int MAX_GENERATIONS = 100;
-    private static int MAX_OPERATIONS = 5;
+    static int MAX_GENERATIONS = 1000;
+    public static int MAX_OPERATIONS = 5;
     private static int FINISH_THRESHOLD = 0;
-    public static int MAX_DEPTH = 3;
+    public static int MAX_DEPTH = 2;
     private static int GENERATION_NUMBER = 0;
     public static List<double> averageFitnessArr = new List<double>();
     public static List<double> bestFitnessArr = new List<double>();
 
-    private static int OPERATIONS_PER_GENERATION = 8500;
+    private static int OPERATIONS_PER_GENERATION = 7000;
     private static int TOURNAMENT_SIZE = 2;
 
     public static Random random = new Random();
-
-    public static double MUTATE_CHANCE = 0.25;
-    static double CROSSOVER_CHANCE = 0.25;
+    
+    static double CROSSOVER_CHANCE = 0.5;
     public static List<Individual> population = new List<Individual>();
     public static Individual bestIndividual;
     public static Fitness fitness;
@@ -40,8 +39,7 @@ static class Gp{
             {
                 evolveGeneration();
             }
-
-            bestIndividual = null;
+            
             gradeGeneration();
             if (bestIndividual.fitness <= FINISH_THRESHOLD)
             {
@@ -71,11 +69,13 @@ static class Gp{
             }
             else
             {
-                var parent = population[TournamentSelection()];
-                var child = new Program(parent.program.nodes);
+                var parent = population[NegativeTournamentSelection()];
+                parent.program.Mutate();
+                
+                // var child = new Program(parent.program.nodes);
 
-                child.Mutate();
-                population[NegativeTournamentSelection()] = new Individual(child);
+                // child.Mutate();
+                // population[NegativeTournamentSelection()] = new Individual(child);
             }
         }
         GENERATION_NUMBER += 1;
@@ -135,60 +135,30 @@ static class Gp{
         Console.WriteLine(bestIndividual.program);
     }
 
-    public static int tournamentSelection()
-    {
-        int bestIndex = random.Next(POPULATION_SIZE);
-        for (int i = 0; i < TOURNAMENT_SIZE; i++)
-        {
-            int randomIndex = random.Next(POPULATION_SIZE);
-            if (population[randomIndex].fitness < population[bestIndex].fitness)
-            {
-                bestIndex = randomIndex;
-            }
-        }
-
-        return bestIndex;
-    }
-
-    public static int negativeSelection()
-    {
-        int worstIndex = random.Next(POPULATION_SIZE);
-        for (int i = 0; i < TOURNAMENT_SIZE; i++)
-        {
-            int randomIndex = random.Next(POPULATION_SIZE);
-            if (population[randomIndex].fitness > population[worstIndex].fitness)
-            {
-                worstIndex = randomIndex;
-            }
-        }
-
-        return worstIndex;
-    }
-
-    public static int bestSelection()
-    {
-        int bestIndex = 0;
-        for (int i = 1; i < POPULATION_SIZE; i++)
-        {
-            if (population[i].fitness < population[bestIndex].fitness)
-            {
-                bestIndex = i;
-            }
-        }
-
-        return bestIndex;
-    }
+    
     static void Main(){
-        fitness = new Fitness("../../../data/problem11.txt");
+        fitness = new Fitness("../../../data/final_boolean_6.txt");
         createPopulation();
         runEvolve();
         SaveListToCsv(averageFitnessArr, "./average.txt");
         SaveListToCsv(bestFitnessArr, "./best.txt");
-        // Program p = new Program();
-        // Node n = new InputNode();
-        // p.nodes.Add(n);
-        // Individual i = new Individual(p);
-        // fitness.calculateFitness(i);
+
+        // Program p1 = new Program(1, 5);
+        // Program p2 = new Program(1, 5);
+        // Console.WriteLine(p1);
+        // Console.WriteLine("==========");
+        // p1.Mutate();
+        // Console.WriteLine(p1);
+        //
+        // p1.Mutate();
+        // var (res1, res2) = Program.Crossover(p1, p2);
+        //
+
+        // Console.WriteLine(p2);
+        // Console.WriteLine("==========");
+        // Console.WriteLine(res1);
+        // Console.WriteLine("==========");
+        // Console.WriteLine(res2);
 
 
 
@@ -198,11 +168,10 @@ static class Gp{
         try
         {
             string csvLine = "val\n";
-            for(int i=0;i<list.Count;i++){}
-            // Convert each integer to a string and join them with commas
+
              csvLine += string.Join("\n", list);
 
-            // Write the CSV line to the file
+
             File.WriteAllText(filePath, csvLine);
         }
         catch (Exception ex)

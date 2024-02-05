@@ -8,13 +8,11 @@ public class Individual{
     public Individual(){}
     public Individual(int maxDepth, int numOfNodes){
         program = new Program(maxDepth, numOfNodes);
-        // fitness = Gp.fitness.calculateFitness(this);
     }
 
     public Individual(Program program)
     {
         this.program = program;
-        fitness = Gp.fitness.calculateFitness(this);
     }
     public List<String> Run(List<String> inputs){
 
@@ -25,7 +23,7 @@ public class Individual{
 
         MyGrammarParser.ProgramContext programContext = myGrammarParser.program();
 
-        MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, -1);
+        MyGrammarVisitor myGrammarVisitor = new MyGrammarVisitor(inputs, 100);
         var res = myGrammarVisitor.visitWithOutput(programContext);
 
         return res;
@@ -64,5 +62,10 @@ public class Individual{
         Individual i = new Individual();
         i.program = program.copy();
         return i;
+    }
+
+    public override string ToString()
+    {
+        return program.ToString();
     }
 }
