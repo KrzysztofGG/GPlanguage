@@ -7,7 +7,7 @@ static class Gp{
     static int MAX_GENERATIONS = 1000;
     public static int MAX_OPERATIONS = 5;
     private static int FINISH_THRESHOLD = 0;
-    public static int MAX_DEPTH = 2;
+    public static int MAX_DEPTH = 3;
     private static int GENERATION_NUMBER = 0;
     public static List<double> averageFitnessArr = new List<double>();
     public static List<double> bestFitnessArr = new List<double>();
@@ -137,7 +137,7 @@ static class Gp{
 
     
     static void Main(){
-        fitness = new Fitness("../../../data/final_boolean_6.txt");
+        fitness = new Fitness("../../../data/problem14a.txt");
         createPopulation();
         runEvolve();
         SaveListToCsv(averageFitnessArr, "./average.txt");

@@ -1,30 +1,4 @@
-﻿while(X3 >= 894){
-   X5=X5
-   scan(X4)
-   scan(X2)
-}
-scan(X5)
-if(X1 >= 80){
-   if(X3 >= 583){
-      X0=X1
-      scan(X2)
-      print(-148)
-      scan(X1)
-      X0=X3-87
- }
-   X1=X2/X3
-   if(-308 == 136){
-      scan(X5)
-      scan(X1)
- }
-   X0=-543+X2
-   scan(X3)
-}
-if(X1 >= X4){
-   print(X3)
-   if(X1 >= 434){
-      X2=X4
-      X1=X1*X4
-      scan(X4)
- }
-}
+﻿scan(X0)
+scan(X1)
+X0=X0*X1
+print(X0)

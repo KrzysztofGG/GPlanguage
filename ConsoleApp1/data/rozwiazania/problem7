@@ -1,6 +1,5 @@
-﻿print(X1)
-X3=808--97
-scan(X5)
-X4=210/X0
-scan(X2)
+﻿scan(X1)
+scan(X0)
+X1=X1+X0
+print(X1)
 

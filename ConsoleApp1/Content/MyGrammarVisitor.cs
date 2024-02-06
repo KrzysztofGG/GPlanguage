@@ -8,13 +8,13 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
 {
     private Dictionary<string, double> NumVariables { get; } = new();
     private Dictionary<string, bool> BoolVariables { get; } = new();
-    private List<string> _output = new();
+    private List<double> _output = new();
     private List<Value>? _input = new();
     private int _inputCounter;
     private int operations;
     private int maxOperations;
 
-    public MyGrammarVisitor(List<string> input, int maxOperations)
+    public MyGrammarVisitor(List<double> input, int maxOperations)
     { 
         _inputCounter = 0;
         operations = 0;
@@ -26,7 +26,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         this.maxOperations = maxOperations;
     }
 
-    public List<String> visitWithOutput(IParseTree tree)
+    public List<double> visitWithOutput(IParseTree tree)
     {
         try
         {
@@ -35,7 +35,7 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
         catch (Exception e)
         {
             // Console.WriteLine(e.Message);
-            return new List<string>();
+            return new List<double>();
             // return _output;
         }
 
@@ -77,7 +77,8 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
     {
         handleOperations();
         var value = Visit(context.numeric_value());
-        _output.Add(value.NumValue.ToString(CultureInfo.InvariantCulture));
+        // _output.Add(value.NumValue.ToString(CultureInfo.InvariantCulture));
+        _output.Add(value.NumValue);
         // Console.Write(value);
         // Console.Write('\n');
         return value;
@@ -86,7 +87,12 @@ public class MyGrammarVisitor: MyGrammarBaseVisitor<Value>
     {
         handleOperations();
         var value = Visit(context.bool_value());
-        _output.Add(value.BoolValue.ToString());
+        // _output.Add(value.BoolValue.ToString());
+        if (value.BoolValue)
+            _output.Add(1);
+        else
+            _output.Add(0);
+        
         // Console.Write(value);
         // Console.Write('\n');
         return value;

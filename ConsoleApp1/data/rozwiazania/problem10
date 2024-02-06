@@ -1,0 +1,12 @@
+scan(X0)
+scan(X1)
+X1=X0-X1
+while(X0 != X0){
+   X0=X0+X0
+   print(X0)
+   scan(X0)
+   scan(X0)
+}
+print(X1)
+scan(X0)
+X0=1

@@ -14,7 +14,7 @@ public class Individual{
     {
         this.program = program;
     }
-    public List<String> Run(List<String> inputs){
+    public List<double> Run(List<double> inputs){
 
         AntlrInputStream inputStream = new AntlrInputStream(program.ToString());
         MyGrammarLexer myGrammarLexer = new MyGrammarLexer(inputStream);

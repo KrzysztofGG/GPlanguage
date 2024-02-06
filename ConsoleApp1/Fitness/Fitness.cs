@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class Fitness{
     static double punishment = 10000;
     static double mult_punishment = 100;
@@ -12,11 +14,11 @@ public class Fitness{
             var slice = line.Split(":");
             target.Inputs = new();
             foreach(var input in slice[0].Trim().Split(" ")){
-                target.Inputs.Add(input);
+                target.Inputs.Add(double.Parse(input, CultureInfo.InvariantCulture));
             }
             target.ExpectedOutputs = new();
             foreach(var output in slice[1].Trim().Split(" ")){
-                target.ExpectedOutputs.Add(output);
+                target.ExpectedOutputs.Add(double.Parse(output, CultureInfo.InvariantCulture));
             }
             targets.Add(target);
         }
@@ -40,16 +42,16 @@ public class Fitness{
         return fitness;
     }
 
-    public double evaluate(List<string> outputs, List<string> expectedOutputs){
-        if (expectedOutputs.Contains("specific"))
-        {
-            return evaluateSpecificIndex(outputs, expectedOutputs);
-        }
-        
-        if (expectedOutputs.Contains("any"))
-        {
-            return evaluateAnyNumberOfOutputs(outputs, expectedOutputs);
-        }
+    public double evaluate(List<double> outputs, List<double> expectedOutputs){
+        // if (expectedOutputs.Contains("specific"))
+        // {
+        //     return evaluateSpecificIndex(outputs, expectedOutputs);
+        // }
+        //
+        // if (expectedOutputs.Contains("any"))
+        // {
+        //     return evaluateAnyNumberOfOutputs(outputs, expectedOutputs);
+        // }
 
         return evaluateGivenNumberOfOutputs(outputs, expectedOutputs);
 
@@ -81,7 +83,7 @@ public class Fitness{
         return punishment*10;
     }
 
-    public double evaluateGivenNumberOfOutputs(List<string> outputs, List<string> expectedOutputs)
+    public double evaluateGivenNumberOfOutputs(List<double> outputs, List<double> expectedOutputs)
     {
         double res = 0;
         if (outputs.Count == 0)
@@ -98,7 +100,8 @@ public class Fitness{
                 res += punishment;
             }
             else{
-                res += Math.Abs(double.Parse(outputs[i]) - double.Parse(expectedOutputs[i]));
+                // res += Math.Abs(double.Parse(outputs[i]) - double.Parse(expectedOutputs[i]));
+                res += Math.Abs(outputs[i] - expectedOutputs[i]);
             }
         }
         return res;

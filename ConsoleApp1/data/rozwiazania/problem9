@@ -1,5 +1,5 @@
-﻿print(X0)
-X3=471
-scan(X0)
-X4=129
-scan(X4)
+﻿scan(X0)
+scan(X1)
+X1=X0+X1
+print(X1)
+scan(X1)
