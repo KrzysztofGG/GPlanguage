@@ -21,7 +21,7 @@ public class WhileNode:Node{
     {
         this.nodes = nodes;
         this.condition = condition;
-        this.indentAmount = Gp.MAX_DEPTH - 1;
+        this.indentAmount = 1;
     }
         public override string ToString()
     {
