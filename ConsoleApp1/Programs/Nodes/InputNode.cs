@@ -7,6 +7,12 @@ public class InputNode:Node{
     public InputNode(int num){
         this.val = "X"+num;
     }
+
+    public InputNode(string val)
+    {
+        this.val = val;
+    }
+    
         public override string ToString()
     {
         return $"scan({val})\n";

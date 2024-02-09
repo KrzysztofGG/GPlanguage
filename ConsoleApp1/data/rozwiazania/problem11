@@ -1,4 +1,0 @@
-﻿scan(X0)
-scan(X1)
-X0=X0*X1
-print(X0)

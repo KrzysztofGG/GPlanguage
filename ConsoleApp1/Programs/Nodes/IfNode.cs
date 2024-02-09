@@ -15,6 +15,13 @@ public class IfNode:Node{
         }
 
     }
+
+    public IfNode(List<Node> nodes, BooleanNode condition)
+    {
+        this.nodes = nodes;
+        this.condition = condition;
+        this.indentAmount = Gp.MAX_DEPTH - 1;
+    }
         public override string ToString()
     {
         

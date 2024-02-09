@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
+using System.Text;
 
 static class Gp{
 
@@ -21,6 +22,40 @@ static class Gp{
     public static List<Individual> population = new List<Individual>();
     public static Individual bestIndividual;
     public static Fitness fitness;
+    static void saveProblem(string fileName)
+    {
+        fileName = fileName.Substring(0, fileName.Length - 4);
+        
+        if(!Directory.Exists(($"../../../data/rozwiazania/{fileName}")))
+        {
+            Directory.CreateDirectory($"../../../data/rozwiazania/{fileName}");
+        }
+        string path = $"../../../data/rozwiazania/{fileName}/solution";
+        try
+        {
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                sw.WriteLine($"POPULATION_SIZE = {POPULATION_SIZE}");
+                sw.WriteLine($"MAX_GENERATIONS = {MAX_GENERATIONS}");
+                sw.WriteLine($"MAX_OPERATIONS = {MAX_OPERATIONS}");
+                sw.WriteLine($"FINISH_THRESHOLD = {FINISH_THRESHOLD}");
+                sw.WriteLine($"MAX_DEPTH = {MAX_DEPTH}");
+                sw.WriteLine($"OPERATIONS_PER_GENERATION = {OPERATIONS_PER_GENERATION}");
+                sw.WriteLine($"TOURNAMENT_SIZE = {TOURNAMENT_SIZE}");
+                sw.WriteLine($"CROSSOVER_CHANCE = {CROSSOVER_CHANCE}");
+                sw.WriteLine($"GENERATIONS = {GENERATION_NUMBER}\n");
+                
+                sw.WriteLine("FOUND SOLUTION:\n" + bestIndividual.program);
+            }
+            
+            SaveListToCsv(averageFitnessArr, $@"../../../data/rozwiazania/{fileName}/average.txt");
+            SaveListToCsv(bestFitnessArr, $@"../../../data/rozwiazania/{fileName}/best.txt");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
     public static void createPopulation()
     {
         for (int i = 0; i < POPULATION_SIZE; i++)
@@ -30,9 +65,106 @@ static class Gp{
         
     }
 
-    public static void runEvolve()
+    public static void createPopulationFromFile(string fileName)
     {
-        
+        List<Node> programNodes = deserializeFile(fileName);
+        for (var i=0; i<programNodes.Count; ++i)
+        {
+            population.Add(new Individual(new Program(programNodes)));
+        }
+
+    }
+
+    public static List<Node> deserializeFile(string fileName)
+    {
+        List<Node> programNodes = new List<Node>();
+        using (var fileStream = File.OpenRead(fileName))
+        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true))
+        {
+            String line;
+            List<Node> nodesForSpecial = new List<Node>();
+            String specialLine = "";
+            Node newNode = null;
+            while ((line = streamReader.ReadLine()) != null && line != "")
+            {
+                if (line.Contains("while") || line.Contains("if"))
+                {
+                    specialLine = line;
+                }
+                else if (line.Contains("scan"))
+                    newNode = createReadWriteNode(line, true);
+                else if (line.Contains("print"))
+                    newNode = createReadWriteNode(line, false);
+                else if (line.Contains("}"))
+                {
+                    if (specialLine.Contains("while"))
+                    {
+                        WhileNode whileNode = (WhileNode)createSpecialNode(specialLine, true);
+                        whileNode.nodes = nodesForSpecial;
+                        programNodes.Add(whileNode);
+                    }
+                    else if (specialLine.Contains("if"))
+                    {
+                        IfNode ifNode = (IfNode)createSpecialNode(specialLine, false);
+                        ifNode.nodes = nodesForSpecial;
+                        programNodes.Add(ifNode);
+                    }
+
+                    nodesForSpecial = new List<Node>();
+                    specialLine = "";
+                }
+                else
+                    newNode = createAssignmentNode(line);
+
+                if (specialLine.Length > 0 && newNode != null)
+                {
+                    nodesForSpecial.Add(newNode);
+                    newNode = null;
+                }
+                else if (newNode != null)
+                {
+                    programNodes.Add(newNode);
+                    newNode = null;
+                }
+            }
+        }
+
+        return programNodes;
+    }
+
+    public static Node createAssignmentNode(String line)
+    {
+        var firstVal = line.Substring(line.IndexOf("X"), line.IndexOf("=") - line.IndexOf("X"));
+        var secondVal = line.Substring(line.IndexOf("=") + 1);
+        return new AssignmentNode(firstVal, secondVal);
+    }
+    public static Node createReadWriteNode(String line, bool isScan)
+    {
+        Node outNode;
+        var val = line.Substring(line.IndexOf("(") + 1, line.IndexOf(")") - line.IndexOf("(") - 1);
+        if (isScan)
+            outNode = new InputNode(val);
+        else
+            outNode = new OutputNode(val);
+        return outNode;
+
+    }
+    public static Node createSpecialNode(String line, bool isWhileNode)
+    {
+        Node outNode;
+        line = line.Substring(line.IndexOf("(", StringComparison.Ordinal)+1);
+        var firstVal = line.Substring(0, line.IndexOf(" "));
+        var comparator = line.Substring(line.IndexOf(" ") + 1, 2);
+        var secondVal = line.Substring(line.IndexOf(" ")+4, line.IndexOf(")") - (line.IndexOf(" ")+4));
+        BooleanNode booleanNode = new BooleanNode(firstVal, secondVal, comparator);
+        if (isWhileNode)
+            outNode = new WhileNode(new List<Node>(), booleanNode);
+        else
+            outNode = new IfNode(new List<Node>(), booleanNode);
+        return outNode;
+    }
+    public static void runEvolve(string fileName)
+    {
         for (int i = 0; i < MAX_GENERATIONS; i++)
         {
             if (i != 0)
@@ -40,14 +172,14 @@ static class Gp{
                 evolveGeneration();
             }
             
-            gradeGeneration();
+            gradeGeneration(fileName);
             if (bestIndividual.fitness <= FINISH_THRESHOLD)
             {
                 break;
             }
         }
 
-        printFoundSolution();
+        printFoundSolution(fileName);
 
     }
 
@@ -108,7 +240,7 @@ static class Gp{
         return worstIndex;
     }
 
-    public static void gradeGeneration()
+    public static void gradeGeneration(String fileName)
     {
         double fitnessSum = 0;
         foreach (var individual in population)
@@ -124,55 +256,51 @@ static class Gp{
         var averageFitness = fitnessSum / POPULATION_SIZE;
         averageFitnessArr.Add(averageFitness);
         bestFitnessArr.Add(bestIndividual.fitness);
+
+        if (GENERATION_NUMBER > 10)
+        {
+            saveProblem(fileName);
+        }
+        
         Console.WriteLine($"GENERATION {GENERATION_NUMBER} AVERAGE FITNESS {averageFitness} BEST FITNESS: {bestIndividual.fitness}");
         Console.WriteLine("BEST INDIVIDUAL:");
         Console.WriteLine(bestIndividual.program);
     }
 
-    public static void printFoundSolution()
+    public static void printFoundSolution(string fileName)
     {
         Console.WriteLine("FOUND SOLUTION:");
         Console.WriteLine(bestIndividual.program);
     }
 
     
-    static void Main(){
-        fitness = new Fitness("../../../data/problem14a.txt");
-        createPopulation();
-        runEvolve();
-        SaveListToCsv(averageFitnessArr, "./average.txt");
-        SaveListToCsv(bestFitnessArr, "./best.txt");
-
-        // Program p1 = new Program(1, 5);
-        // Program p2 = new Program(1, 5);
-        // Console.WriteLine(p1);
-        // Console.WriteLine("==========");
-        // p1.Mutate();
-        // Console.WriteLine(p1);
-        //
-        // p1.Mutate();
-        // var (res1, res2) = Program.Crossover(p1, p2);
-        //
-
-        // Console.WriteLine(p2);
-        // Console.WriteLine("==========");
-        // Console.WriteLine(res1);
-        // Console.WriteLine("==========");
-        // Console.WriteLine(res2);
-
-
-
+    static void Main()
+    {
+        var file = "book_problem_21.txt";
+        fitness = new Fitness($"../../../data/problems/{file}");
+        // createPopulation();
+        createPopulationFromFile("C:\\Users\\krzys\\Desktop\\GPlanguage\\ConsoleApp1\\data\\rozwiazania\\prob\\solution");
+        runEvolve(file);
+        saveProblem(file);
     }
+    
+    
+
+
     static void SaveListToCsv(List<double> list, string filePath)
     {
+        Console.WriteLine("SAVING");
         try
         {
-            string csvLine = "val\n";
+            string csvLine = "";
 
-             csvLine += string.Join("\n", list);
-
-
-            File.WriteAllText(filePath, csvLine);
+            csvLine += string.Join("\n", list);
+            
+            using (StreamWriter sw = File.CreateText(filePath))
+            {
+                sw.WriteLine(csvLine);
+            }	   
+            // File.WriteAllText(filePath, csvLine);
         }
         catch (Exception ex)
         {

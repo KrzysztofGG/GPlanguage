@@ -10,6 +10,7 @@ public class Individual{
         program = new Program(maxDepth, numOfNodes);
     }
 
+    
     public Individual(Program program)
     {
         this.program = program;

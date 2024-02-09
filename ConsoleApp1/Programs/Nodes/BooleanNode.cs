@@ -8,6 +8,13 @@ public class BooleanNode:Node{
         this.secodnVal = RandomGenerator.generateRandomVariable();
         this.comparator = RandomGenerator.generateRandomComparator();
     }
+
+    public BooleanNode(String firstVal, String secodnVal, String comparator)
+    {
+        this.firstVal = firstVal;
+        this.secodnVal = secodnVal;
+        this.comparator = comparator;
+    }
         public override string ToString()
     {
         return $"{firstVal} {comparator} {secodnVal}";

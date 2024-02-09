@@ -31,7 +31,7 @@ public static Node generateRandomNode(int depth){
     return new IfNode(depth);
 }
 public static string generateRandomVariable(){
-    int val = random.Next(0,10);
+    int val = random.Next(0,3);
     return "X"+val;
 }
 public static string generateRandomOperator(){
@@ -55,7 +55,7 @@ public static string generateRandomValueOrVariable(){
     if(val==0){
         return generateRandomVariable();
     }
-    return generateRandomInt(0,1).ToString();
+    return generateRandomInt(-99,99).ToString();
 }
 public static string generateRandomComparator(){
     int val = random.Next(1,5);

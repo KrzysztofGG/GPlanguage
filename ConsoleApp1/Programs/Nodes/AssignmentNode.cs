@@ -24,6 +24,13 @@ public class AssignmentNode:Node{
         // this.secodnVal = RandomGenerator.generateRandomValueOrVariable();
     }
 
+    public AssignmentNode(string firstVal, string secodnVal)
+    {
+        this.firstVal = firstVal;
+        this.secodnVal = secodnVal;
+        this.operand = "=";
+    }
+
     public override string ToString()
     {
         return $"{firstVal}{operand}{secodnVal}\n";

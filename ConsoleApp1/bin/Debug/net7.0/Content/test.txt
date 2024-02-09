@@ -8,11 +8,8 @@ X0 = X0 + 1
 while( X0 < 5){
    print(X0)
    X0 = X0 + 1
-   }
-
+}
 
 if( X0 == X2){
     print(X2)
 }
-
-
