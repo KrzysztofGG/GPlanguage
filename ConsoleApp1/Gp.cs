@@ -68,9 +68,11 @@ static class Gp{
     public static void createPopulationFromFile(string fileName)
     {
         List<Node> programNodes = deserializeFile(fileName);
-        for (var i=0; i<programNodes.Count; ++i)
+        Program programBase = new Program(programNodes);
+        Individual populationBase = new Individual(programBase);
+        for (var i=0; i<POPULATION_SIZE; ++i)
         {
-            population.Add(new Individual(new Program(programNodes)));
+            population.Add(populationBase);
         }
 
     }
